@@ -11,9 +11,15 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div style={{ textAlign: "center" }}>
-          <h1>wen frenstr?</h1>
-          <p>soon™</p>
+        <div>
+          <h1>frenstr</h1>
+          <p>
+            Make new frens on Nostr. Get started by generating a user
+            description for yourself or any other Nostr user.
+          </p>
+          <form>
+            <input autoFocus placeholder="Enter npub or nip-05" />
+          </form>
         </div>
       </main>
     </>
