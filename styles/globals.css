@@ -107,7 +107,7 @@ a {
 }
 
 form {
-  margin-top: 24px;
+  margin: 24px 0;
   display: flex;
 }
 
@@ -143,5 +143,10 @@ button {
 /* Hover effect for the submit button */
 button:hover {
   background-color: #4B0082;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 

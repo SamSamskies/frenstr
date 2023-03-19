@@ -1,7 +1,9 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
-import { FormEvent, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { nip05, nip19 } from "nostr-tools";
+import { Loading } from "@/components/Loading";
+import { makeUrlWithParams } from "@/utils";
 
 const DEFAULT_RELAYS = [
   "wss://relay.damus.io",
@@ -42,22 +44,31 @@ const getPubkeyAndRelays = async (value: string) => {
 };
 
 export default function Home() {
-  const [pubkey, setPubkey] = useState<string>();
-  const [relays, setRelays] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
     event.preventDefault();
 
     // @ts-ignore
     const value = event.target[0].value;
 
-    const result = await getPubkeyAndRelays(value);
+    try {
+      const { pubkey, relays } = (await getPubkeyAndRelays(value)) ?? {};
 
-    if (result?.pubkey) {
-      setPubkey(result.pubkey);
-    }
+      if (!pubkey) {
+        return;
+      }
 
-    if (result?.relays) {
-      setRelays(result.relays);
+      const url = makeUrlWithParams(
+        `${window.location.href}api/users/${pubkey}/events`,
+        {
+          relays: relays ? relays.join(",") : undefined,
+        }
+      );
+      const events = await fetch(url).then((res) => res.json());
+      console.log({ events });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,8 +89,11 @@ export default function Home() {
           </p>
           <form onSubmit={handleSubmit}>
             <input autoFocus placeholder="Enter npub or nip-05" />
-            <button type="submit">Go</button>
+            <button type="submit" disabled={isLoading}>
+              Go
+            </button>
           </form>
+          {isLoading && <Loading />}
         </div>
       </main>
     </>
