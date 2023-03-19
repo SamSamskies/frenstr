@@ -12,6 +12,7 @@ export default function Home() {
   const [description, setDescription] = useState("");
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
+    setDescription("");
     event.preventDefault();
 
     // @ts-ignore
