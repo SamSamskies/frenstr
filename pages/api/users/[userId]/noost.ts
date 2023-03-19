@@ -17,13 +17,13 @@ export default async function handler(
             .NEXT_PUBLIC_FRENSTR_NOSTR_PUBLIC_KEY as string,
           frenstrPrivkey: process.env.FRENSTR_NOSTR_PRIVATE_KEY as string,
         });
-        const success = await publishNoost(event);
+        const { success, message } = await publishNoost(event);
 
         if (success) {
           res.status(201).end("ok");
         } else {
           res.status(500).json({
-            message: "Something went wrong when publishing :(",
+            message,
             event: JSON.stringify(event),
           });
         }
