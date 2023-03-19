@@ -76,9 +76,7 @@ export const createDescriptionNoost = ({
 export const publishNoost = async (
   event: Event
 ): Promise<{ success: boolean; message: string }> => {
-  const relay = relayInit(
-    process.env.PUBLISH_RELAY ?? "wss://nostr.mutinywallet.com"
-  );
+  const relay = relayInit("wss://nostr.mutinywallet.com");
 
   try {
     relay.on("connect", () => {

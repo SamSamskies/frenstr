@@ -2,7 +2,12 @@ import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import React, { FormEvent, useState } from "react";
 import { Loading } from "@/components/Loading";
-import { CONTENT_PREFIX, getPubkeyAndRelays, makeUrlWithParams } from "@/utils";
+import {
+  CONTENT_PREFIX,
+  getPubkeyAndRelays,
+  makeUrlWithParams,
+  publishNoost,
+} from "@/utils";
 import { Description } from "@/components/Description";
 import { type Event } from "nostr-tools";
 
@@ -49,7 +54,7 @@ export default function Home() {
       const events: Event[] = await fetch(eventsUrl).then((res) => res.json());
 
       const notes = events.map(({ content }) => content);
-      const content = `Could you describe the user that wrote these notes? ${JSON.stringify(
+      const content = `Try your best to describe the user that wrote these notes? ${JSON.stringify(
         notes
       )}`;
 
@@ -69,14 +74,19 @@ export default function Home() {
       }).then((res) => res.json());
       setDescription(description);
 
-      // best effort to publish the description to nostr
-      fetch(`${baseUrl}/noost`, {
+      const event = await fetch(`${baseUrl}/noost`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ userId: pubkey, content: description }),
-      });
+      }).then((res) => res.json());
+      console.log(event);
+
+      // best effort to publish the description to nostr
+      publishNoost(event);
+    } catch (error) {
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
