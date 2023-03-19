@@ -27,6 +27,21 @@ export default function Home() {
         return;
       }
 
+      const frenstrEventsUrl = `${window.location.href}api/users/${process.env.NEXT_PUBLIC_FRENSTR_NOSTR_PUBLIC_KEY}/events`;
+      const frenstrEvents: Event[] = await fetch(frenstrEventsUrl).then((res) =>
+        res.json()
+      );
+      const existingDescriptionEvent = frenstrEvents.find(
+        ({ tags }) => tags[0][1] === pubkey
+      );
+
+      if (existingDescriptionEvent) {
+        setDescription(
+          existingDescriptionEvent.content.replace(CONTENT_PREFIX, "")
+        );
+        return;
+      }
+
       const baseUrl = `${window.location.href}api/users/${pubkey}`;
       const eventsUrl = makeUrlWithParams(`${baseUrl}/events`, {
         relays: relays ? relays.join(",") : undefined,
@@ -41,21 +56,6 @@ export default function Home() {
       if (notes.length < 10) {
         alert(
           "sorry, this user has not written enough notes to generate a description"
-        );
-        return;
-      }
-
-      const frenstrEventsUrl = `${window.location.href}api/users/${process.env.NEXT_PUBLIC_FRENSTR_NOSTR_PUBLIC_KEY}/events`;
-      const frenstrEvents: Event[] = await fetch(frenstrEventsUrl).then((res) =>
-        res.json()
-      );
-      const existingDescriptionEvent = frenstrEvents.find(
-        ({ tags }) => tags[0][1] === pubkey
-      );
-
-      if (existingDescriptionEvent) {
-        setDescription(
-          existingDescriptionEvent.content.replace(CONTENT_PREFIX, "")
         );
         return;
       }
