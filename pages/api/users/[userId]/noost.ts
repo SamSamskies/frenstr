@@ -25,7 +25,10 @@ export default async function handler(
           res.status(500).end("Something went wrong :(");
         }
       } catch (error) {
-        res.status(500).end("Something went wrong :(");
+        const errorMessage =
+          error instanceof Error ? error.message : "Something went wrong :(";
+
+        res.status(500).end(errorMessage);
       }
       break;
     default:
