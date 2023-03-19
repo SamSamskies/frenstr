@@ -73,9 +73,7 @@ export const createDescriptionNoost = ({
   return { ...eventWithId, sig: signEvent(eventWithId, frenstrPrivkey) };
 };
 
-export const publishNoost = async (
-  event: Event
-): Promise<{ success: boolean; message: string }> => {
+export const publishNoost = async (event: Event) => {
   const relay = relayInit("wss://nostr.mutinywallet.com");
 
   try {
@@ -91,21 +89,16 @@ export const publishNoost = async (
     let pub = relay.publish(event);
     return await new Promise((resolve, reject) => {
       pub.on("ok", () => {
-        resolve({
-          success: true,
-          message: `${relay.url} has accepted our event`,
-        });
+        console.log(`${relay.url} has accepted our event`);
+        resolve(true);
       });
       pub.on("failed", (reason: string) => {
-        reject(new Error(`failed to publish to ${relay.url}: ${reason}`));
+        console.log(`failed to publish to ${relay.url}: ${reason}`);
+        reject();
       });
     });
   } catch (error) {
-    return {
-      success: false,
-      message:
-        error instanceof Error ? error.message : "Something went wrong :(",
-    };
+    return false;
   } finally {
     if (relay) {
       try {

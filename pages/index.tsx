@@ -81,7 +81,6 @@ export default function Home() {
         },
         body: JSON.stringify({ userId: pubkey, content: description }),
       }).then((res) => res.json());
-      console.log(event);
 
       // best effort to publish the description to nostr
       publishNoost(event);
