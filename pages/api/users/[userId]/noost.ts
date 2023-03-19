@@ -13,7 +13,8 @@ export default async function handler(
         const event = createDescriptionNoost({
           userPubkey: userId as string,
           content: content as string,
-          frenstrPubkey: process.env.FRENSTR_NOSTR_PUBLIC_KEY as string,
+          frenstrPubkey: process.env
+            .NEXT_PUBLIC_FRENSTR_NOSTR_PUBLIC_KEY as string,
           frenstrPrivkey: process.env.FRENSTR_NOSTR_PRIVATE_KEY as string,
         });
         const success = await publishNoost(event);

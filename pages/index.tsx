@@ -2,8 +2,9 @@ import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import React, { FormEvent, useState } from "react";
 import { Loading } from "@/components/Loading";
-import { getPubkeyAndRelays, makeUrlWithParams } from "@/utils";
+import { CONTENT_PREFIX, getPubkeyAndRelays, makeUrlWithParams } from "@/utils";
 import { Description } from "@/components/Description";
+import { type Event } from "nostr-tools";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
@@ -29,15 +30,35 @@ export default function Home() {
       const eventsUrl = makeUrlWithParams(`${baseUrl}/events`, {
         relays: relays ? relays.join(",") : undefined,
       });
-      const events: { content: string; [key: string]: any }[] = await fetch(
-        eventsUrl
-      ).then((res) => res.json());
+      const events: Event[] = await fetch(eventsUrl).then((res) => res.json());
 
       const notes = events.map(({ content }) => content);
       const content = `Could you describe the user that wrote these notes? ${JSON.stringify(
         notes
       )}`;
-      // TODO: look for frenstr kind 1 event that mentions the user before creating a new one
+
+      if (notes.length < 10) {
+        alert(
+          "sorry, this user has not written enough notes to generate a description"
+        );
+        return;
+      }
+
+      const frenstrEventsUrl = `${window.location.href}api/users/${process.env.NEXT_PUBLIC_FRENSTR_NOSTR_PUBLIC_KEY}/events`;
+      const frenstrEvents: Event[] = await fetch(frenstrEventsUrl).then((res) =>
+        res.json()
+      );
+      const existingDescriptionEvent = frenstrEvents.find(
+        ({ tags }) => tags[0][1] === pubkey
+      );
+
+      if (existingDescriptionEvent) {
+        setDescription(
+          existingDescriptionEvent.content.replace(CONTENT_PREFIX, "")
+        );
+        return;
+      }
+
       const description = await fetch(`${baseUrl}/description`, {
         method: "POST",
         headers: {
