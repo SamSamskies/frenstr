@@ -22,13 +22,19 @@ export default async function handler(
         if (success) {
           res.status(201).end("ok");
         } else {
-          res.status(500).end("Something went wrong :(");
+          res.status(500).json({
+            message: "Something went wrong when publishing :(",
+            event: JSON.stringify(event),
+          });
         }
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Something went wrong :(";
 
-        res.status(500).end(errorMessage);
+        res.status(500).json({
+          message: errorMessage,
+          event: JSON.stringify(event),
+        });
       }
       break;
     default:
