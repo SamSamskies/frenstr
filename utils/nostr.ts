@@ -30,10 +30,10 @@ export const getPubkeyAndRelays = async (value: string) => {
       const relays: { relay: string; read: boolean; write: boolean }[] =
         await fetch(`/api/users/${pubkey}/relays`).then((res) => res.json());
       const readRelays = relays
-        .filter(({ read }) => read)
-        .map(({ relay }) => relay);
+        ? relays.filter(({ read }) => read).map(({ relay }) => relay)
+        : DEFAULT_RELAYS;
 
-      return { pubkey, relays: readRelays ?? DEFAULT_RELAYS };
+      return { pubkey, relays: readRelays };
     }
 
     const res = await nip05.queryProfile(value);
