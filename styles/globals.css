@@ -105,3 +105,48 @@ a {
     color-scheme: dark;
   }
 }
+
+form {
+  margin: 24px 0;
+  display: flex;
+}
+
+/* Style the input field */
+input {
+  padding: 12px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  width: 100%;
+  margin-right: 10px;
+  background-color: #F7FAFC;
+  color: #1A202C;
+  box-shadow: none;
+}
+
+input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #7F00FF;
+}
+
+/* Style the submit button */
+button {
+  background-color: #7F00FF;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 5px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Hover effect for the submit button */
+button:hover {
+  background-color: #4B0082;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
