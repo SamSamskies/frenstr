@@ -1,6 +1,7 @@
 import Image from "next/image";
+import { ReactNode } from "react";
 
-export const Loading = () => {
+export const Loading = ({ children }: { children: ReactNode }) => {
   return (
     <div style={{ textAlign: "center" }}>
       <Image
@@ -9,7 +10,7 @@ export const Loading = () => {
         width={341}
         height={360}
       />
-      <h2>Loading...</h2>
+      <h2>{children}</h2>
     </div>
   );
 };

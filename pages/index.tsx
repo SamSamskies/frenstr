@@ -6,6 +6,7 @@ import { getPubkeyAndRelays, makeUrlWithParams } from "@/utils";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
+  const [description, setDescription] = useState();
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     event.preventDefault();
@@ -20,14 +21,30 @@ export default function Home() {
         return;
       }
 
-      const url = makeUrlWithParams(
-        `${window.location.href}api/users/${pubkey}/events`,
-        {
-          relays: relays ? relays.join(",") : undefined,
-        }
-      );
-      const events = await fetch(url).then((res) => res.json());
-      console.log({ events });
+      const baseUrl = `${window.location.href}api/users/${pubkey}`;
+      const eventsUrl = makeUrlWithParams(`${baseUrl}/events`, {
+        relays: relays ? relays.join(",") : undefined,
+      });
+      const events: { content: string; [key: string]: any }[] = await fetch(
+        eventsUrl
+      ).then((res) => res.json());
+
+      const notes = events.map(({ content }) => content);
+      const content = `Could you describe the user that wrote these notes? ${JSON.stringify(
+        notes
+      )}`;
+      // TODO: look for frenstr kind 1 event that mentions the user before creating a new one
+      const description = await fetch(`${baseUrl}/description`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: pubkey, content }),
+      }).then((res) => res.json());
+      setDescription(description);
+      // TODO:
+      // - Generate event to broadcast
+      // - Broadcast event using Blastr and nostr.wine
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +71,8 @@ export default function Home() {
               Go
             </button>
           </form>
-          {isLoading && <Loading />}
+          {isLoading && <Loading>Generating description...</Loading>}
+          {description && <p>{description}</p>}
         </div>
       </main>
     </>
