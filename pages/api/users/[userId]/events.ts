@@ -5,14 +5,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId, relays } = req.query;
+  const { userId, relays, limit } = req.query;
 
   switch (req.method) {
     case "GET":
       try {
         const url = makeUrlWithParams(
           `https://www.nostrstuff.com/api/users/${userId}/events`,
-          { relays: relays as string, limit: "20" }
+          { relays: relays as string, limit: (limit as string) ?? "20" }
         );
         const response = await fetch(url);
 
