@@ -109,3 +109,11 @@ export const publishNoost = async (event: Event) => {
     }
   }
 };
+
+export const getExistingDescriptionEvent = async (pubkey: string) => {
+  const frenstrEventsUrl = `${window.location.href}api/users/${process.env.NEXT_PUBLIC_FRENSTR_NOSTR_PUBLIC_KEY}/events?limit=100`;
+  const frenstrEvents: Event[] = await fetch(frenstrEventsUrl).then((res) =>
+    res.json()
+  );
+  return frenstrEvents.find(({ tags }) => tags[0][1] === pubkey);
+};

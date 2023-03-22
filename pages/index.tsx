@@ -4,6 +4,7 @@ import React, { FormEvent, useState } from "react";
 import { Loading } from "@/components/Loading";
 import {
   CONTENT_PREFIX,
+  getExistingDescriptionEvent,
   getPubkeyAndRelays,
   makeUrlWithParams,
   publishNoost,
@@ -32,12 +33,8 @@ export default function Home() {
         return;
       }
 
-      const frenstrEventsUrl = `${window.location.href}api/users/${process.env.NEXT_PUBLIC_FRENSTR_NOSTR_PUBLIC_KEY}/events`;
-      const frenstrEvents: Event[] = await fetch(frenstrEventsUrl).then((res) =>
-        res.json()
-      );
-      const existingDescriptionEvent = frenstrEvents.find(
-        ({ tags }) => tags[0][1] === pubkey
+      const existingDescriptionEvent = await getExistingDescriptionEvent(
+        pubkey
       );
 
       if (existingDescriptionEvent) {
