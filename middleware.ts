@@ -34,6 +34,7 @@ export async function middleware(req: NextRequest) {
     return new NextResponse(
       JSON.stringify({
         isTryingToAccessProtectedEndpoint,
+        pathname: req.nextUrl.pathname,
       }),
       { status: 403 }
     );
