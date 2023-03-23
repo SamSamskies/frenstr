@@ -14,6 +14,7 @@
     "@types/react-dom": "18.0.11",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "iron-session": "^6.3.1",
     "next": "13.2.4",
     "nostr-tools": "^1.7.4",
     "openai": "^3.2.1",
