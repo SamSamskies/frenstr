@@ -6,23 +6,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const { userId, content } = req.body;
-  const isHostWhitelisted = () => {
-    for (const host of ["frenstr.com", "www.frenstr.com", "localhost:3000"]) {
-      if (
-        req.headers.host === host ||
-        req.headers.host?.endsWith("-samsamskies.vercel.app")
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  };
-
-  // TODO: implement a better way to lock this endpoint down
-  if (!isHostWhitelisted()) {
-    return res.status(403).end("Forbidden");
-  }
 
   switch (req.method) {
     case "POST":
