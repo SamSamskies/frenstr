@@ -16,9 +16,9 @@ export async function middleware(req: NextRequest) {
   });
 
   // @ts-ignore
-  const isAuthorized = () => {
-    let isTryingToAccessProtectedEndpoint = false;
+  let isTryingToAccessProtectedEndpoint = false;
 
+  const isAuthorized = () => {
     for (const s in ["description", "noost"]) {
       if (req.nextUrl.pathname.includes(s)) {
         isTryingToAccessProtectedEndpoint = true;
@@ -31,7 +31,12 @@ export async function middleware(req: NextRequest) {
   };
 
   if (!isAuthorized()) {
-    return new NextResponse("Forbidden", { status: 403 });
+    return new NextResponse(
+      JSON.stringify({
+        isTryingToAccessProtectedEndpoint,
+      }),
+      { status: 403 }
+    );
   }
 
   // @ts-ignore
