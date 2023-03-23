@@ -17,11 +17,13 @@ export async function middleware(req: NextRequest) {
 
   // @ts-ignore
   let isTryingToAccessProtectedEndpoint = false;
+  let matchedPath = "";
 
   const isAuthorized = () => {
     for (const s in ["description", "noost"]) {
       if (req.nextUrl.pathname.includes(s)) {
         isTryingToAccessProtectedEndpoint = true;
+        matchedPath = s;
         break;
       }
     }
@@ -35,6 +37,7 @@ export async function middleware(req: NextRequest) {
       JSON.stringify({
         isTryingToAccessProtectedEndpoint,
         pathname: req.nextUrl.pathname,
+        matchedPath,
       }),
       { status: 403 }
     );
