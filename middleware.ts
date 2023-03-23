@@ -1,44 +1,28 @@
+// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getIronSession } from "iron-session/edge";
 
-export async function middleware(req: NextRequest) {
-  const res = NextResponse.next();
-  const sessionPassword = process.env.SESSION_PASSWORD;
-
-  if (!sessionPassword) {
-    throw new Error("SESSION_PASSWORD is not defined.");
-  }
-
-  const session = await getIronSession(req, res, {
-    cookieName: "frenstr",
-    password: sessionPassword,
-  });
-
-  // @ts-ignore
-  const isAuthorized = () => {
-    let isTryingToAccessProtectedEndpoint = false;
-
-    for (const s in ["description", "noost"]) {
-      if (req.nextUrl.pathname.includes(s)) {
-        isTryingToAccessProtectedEndpoint = true;
-        break;
+// This function can be marked `async` if using `await` inside
+export function middleware(req: NextRequest) {
+  const isHostWhitelisted = () => {
+    for (const host of ["frenstr.com", "www.frenstr.com", "localhost:3000"]) {
+      if (
+        req.headers.get("host") === host ||
+        req.headers.get("host")?.endsWith("-samsamskies.vercel.app")
+      ) {
+        return true;
       }
     }
 
-    // @ts-ignore
-    return isTryingToAccessProtectedEndpoint && session.authorized === true;
+    return false;
   };
 
-  if (!isAuthorized()) {
+  // TODO: implement a better way to lock endpoints down
+  if (!isHostWhitelisted()) {
     return new NextResponse("Forbidden", { status: 403 });
   }
 
-  // @ts-ignore
-  session.authorized = true;
-  await session.save();
-
-  return res;
+  return NextResponse.next();
 }
 
 export const config = {
