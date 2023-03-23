@@ -73,6 +73,31 @@ export const createDescriptionNoost = ({
   return { ...eventWithId, sig: signEvent(eventWithId, frenstrPrivkey) };
 };
 
+interface FortuneCookieNoost {
+  userPubkey: string; // hex
+  fortuneCookiePubkey: string; // hex
+  fortuneCookiePrivkey: string; // hex
+  content: string;
+}
+
+export const createFortuneCookieNoost = ({
+  userPubkey,
+  fortuneCookiePubkey,
+  fortuneCookiePrivkey,
+  content,
+}: FortuneCookieNoost) => {
+  const baseEvent = {
+    kind: 1,
+    pubkey: fortuneCookiePubkey,
+    created_at: Math.floor(Date.now() / 1000),
+    tags: [["p", userPubkey]],
+    content: `#[0] #FortuneCookie 🥠\n\n${content}`,
+  };
+  const eventWithId = { ...baseEvent, id: getEventHash(baseEvent) };
+
+  return { ...eventWithId, sig: signEvent(eventWithId, fortuneCookiePrivkey) };
+};
+
 export const publishNoost = async (event: Event) => {
   const relay = relayInit("wss://nostr.mutinywallet.com");
 
@@ -116,4 +141,12 @@ export const getExistingDescriptionEvent = async (pubkey: string) => {
     res.json()
   );
   return frenstrEvents.find(({ tags }) => tags[0][1] === pubkey);
+};
+
+export const getExistingFortuneCookieEvent = async (pubkey: string) => {
+  const fortuneCookieEventsUrl = `${window.location.origin}/api/users/${process.env.NEXT_PUBLIC_FORTUNE_COOKIE_PUBLIC_KEY}/events?limit=100`;
+  const fortuneCookieEvents: Event[] = await fetch(fortuneCookieEventsUrl).then(
+    (res) => res.json()
+  );
+  return fortuneCookieEvents.find(({ tags }) => tags[0][1] === pubkey);
 };

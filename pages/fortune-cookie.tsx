@@ -1,7 +1,12 @@
 import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import React, { FormEvent, useState } from "react";
-import { getPubkeyAndRelays, makeUrlWithParams } from "@/utils";
+import {
+  getExistingFortuneCookieEvent,
+  getPubkeyAndRelays,
+  makeUrlWithParams,
+  publishNoost,
+} from "@/utils";
 import { Description } from "@/components/Description";
 import { type Event } from "nostr-tools";
 import { FortuneCookieLoading } from "@/components/FortuneCookieLoading";
@@ -24,6 +29,20 @@ export default function FortuneCookie() {
       const { pubkey, relays } = (await getPubkeyAndRelays(value)) ?? {};
 
       if (!pubkey) {
+        return;
+      }
+
+      const existingFortuneCookieEvent = await getExistingFortuneCookieEvent(
+        pubkey
+      );
+
+      if (existingFortuneCookieEvent) {
+        setFortune(
+          existingFortuneCookieEvent.content.replace(
+            "#[0] #FortuneCookie 🥠",
+            ""
+          )
+        );
         return;
       }
 
@@ -54,6 +73,17 @@ export default function FortuneCookie() {
         body: JSON.stringify({ userId: pubkey, content }),
       }).then((res) => res.json());
       setFortune(fortune);
+
+      const event = await fetch(`${baseUrl}/fortune-cookie-noost`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: pubkey, content: fortune }),
+      }).then((res) => res.json());
+
+      // best effort to publish the description to nostr
+      publishNoost(event);
     } catch (error) {
       console.error(error);
     } finally {
@@ -84,7 +114,7 @@ export default function FortuneCookie() {
           )}
           {submittedValue && fortune && (
             <Description>
-              <p>@{submittedValue} #FortuneCookie 🥠</p>
+              <p>#FortuneCookie 🥠</p>
               <br />
               <p>{fortune}</p>
             </Description>
