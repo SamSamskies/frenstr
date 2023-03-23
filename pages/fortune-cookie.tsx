@@ -100,7 +100,7 @@ export default function FortuneCookie() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <div style={{ width: 600 }}>
+        <div style={{ width: "100%" }}>
           <h1>Nostr Fortune Cookie</h1>
           <p>Generate a fortune cookie message for any Nostr user.</p>
           <form onSubmit={handleSubmit}>
