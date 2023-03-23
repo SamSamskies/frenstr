@@ -14,33 +14,15 @@ export async function middleware(req: NextRequest) {
     cookieName: "frenstr",
     password: sessionPassword,
   });
-
   // @ts-ignore
-  let isTryingToAccessProtectedEndpoint = false;
-  let matchedPath = "";
+  const isSessionAuthorized = session.authorized === true;
 
-  const isAuthorized = () => {
-    for (const s in ["description", "noost"]) {
-      if (req.nextUrl.pathname.includes(s)) {
-        isTryingToAccessProtectedEndpoint = true;
-        matchedPath = s;
-        break;
-      }
-    }
-
-    // @ts-ignore
-    return isTryingToAccessProtectedEndpoint && session.authorized === true;
-  };
-
-  if (!isAuthorized()) {
-    return new NextResponse(
-      JSON.stringify({
-        isTryingToAccessProtectedEndpoint,
-        pathname: req.nextUrl.pathname,
-        matchedPath,
-      }),
-      { status: 403 }
-    );
+  if (
+    (req.nextUrl.pathname.endsWith("description") ||
+      req.nextUrl.pathname.endsWith("noost")) &&
+    !isSessionAuthorized
+  ) {
+    return new NextResponse("Forbidden", { status: 403 });
   }
 
   // @ts-ignore
