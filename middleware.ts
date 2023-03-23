@@ -19,7 +19,8 @@ export async function middleware(req: NextRequest) {
 
   if (
     (req.nextUrl.pathname.endsWith("description") ||
-      req.nextUrl.pathname.endsWith("noost")) &&
+      req.nextUrl.pathname.endsWith("noost") ||
+      req.nextUrl.pathname.endsWith("fortune-cookie-noost")) &&
     !isSessionAuthorized
   ) {
     return new NextResponse("Forbidden", { status: 403 });
