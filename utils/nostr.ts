@@ -90,7 +90,10 @@ export const createFortuneCookieNoost = ({
     kind: 1,
     pubkey: fortuneCookiePubkey,
     created_at: Math.floor(Date.now() / 1000),
-    tags: [["p", userPubkey]],
+    tags: [
+      ["p", userPubkey],
+      ["t", "fortunecookie"],
+    ],
     content: `#[0] #FortuneCookie 🥠\n\n${content}`,
   };
   const eventWithId = { ...baseEvent, id: getEventHash(baseEvent) };
