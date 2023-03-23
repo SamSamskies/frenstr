@@ -92,7 +92,7 @@ export const createFortuneCookieNoost = ({
     created_at: Math.floor(Date.now() / 1000),
     tags: [
       ["p", userPubkey],
-      ["t", "fortunecookie"],
+      ["t", "FortuneCookie"],
     ],
     content: `#[0] #FortuneCookie 🥠\n\n${content}`,
   };
