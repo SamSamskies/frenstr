@@ -114,7 +114,12 @@ export default function FortuneCookie() {
           )}
           {submittedValue && fortune && (
             <Description>
-              <p>#FortuneCookie 🥠</p>
+              <p>
+                <a href="https://snort.social/t/FortuneCookie" target="_blank">
+                  #FortuneCookie
+                </a>{" "}
+                🥠
+              </p>
               <br />
               <p>{fortune}</p>
             </Description>
