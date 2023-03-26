@@ -66,7 +66,7 @@ export const createDescriptionNoost = ({
     pubkey: frenstrPubkey,
     created_at: Math.floor(Date.now() / 1000),
     tags: [["p", userPubkey]],
-    content: `${CONTENT_PREFIX}${content}`,
+    content: `${CONTENT_PREFIX}\n\n${content}`,
   };
   const eventWithId = { ...baseEvent, id: getEventHash(baseEvent) };
 

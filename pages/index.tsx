@@ -69,14 +69,18 @@ export default function Home() {
         },
         body: JSON.stringify({ userId: pubkey, content }),
       }).then((res) => res.json());
-      setDescription(description);
+      const normalizedDescription = description.replace(/^\n+/, "");
+      setDescription(normalizedDescription);
 
       const event = await fetch(`${baseUrl}/noost`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: pubkey, content: description }),
+        body: JSON.stringify({
+          userId: pubkey,
+          content: normalizedDescription,
+        }),
       }).then((res) => res.json());
 
       // best effort to publish the description to nostr
