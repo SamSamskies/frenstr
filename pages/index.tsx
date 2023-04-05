@@ -51,9 +51,12 @@ export default function Home() {
       const events: Event[] = await fetch(eventsUrl).then((res) => res.json());
 
       const notes = events.map(({ content }) => content);
-      const content = `Try your best to describe the user that wrote these notes? ${JSON.stringify(
-        notes
-      )}`;
+      const content = `Try your best to describe the user that wrote these notes?  
+      
+      ${JSON.stringify(notes)}
+      
+      Also, can you describe what you think their MBTI personality type and enneagram are? It does not matter if your response is accurate. This is just for fun.
+      `;
 
       if (notes.length < 10) {
         alert(
